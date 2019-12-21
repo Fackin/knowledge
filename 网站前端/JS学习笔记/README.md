@@ -1440,6 +1440,13 @@
     >        console.log(num);       // => 0 => 1 => 2
     >    }, 0);
     >}
+    >
+    > // ES6的块级作用域（ES6拥有了块级作用域之后，不再需要~~自执行匿名函数~~）
+    >for (let i = 0; i < 3; i++) {
+    >    setTimeout(function () {
+    >        console.log(i);        // => 0 => 1 => 2
+    >    }, 0);
+    >}
     >```
     ></details>
 3. 可以添加函数名：`(function 内部名字 () { console.log(内部名字); 错误 }())`
@@ -3125,7 +3132,7 @@
 
         1. <details>
 
-            <summary>由声明函数时，变量处在哪一个函数作用域（或块级作用域）唯一决定（考虑闭包）；</summary>
+            <summary>由声明函数时，变量处在哪一个函数作用域（或块级作用域）唯一决定；</summary>
 
             1. ES5
 
@@ -3207,6 +3214,8 @@
     </details>
 2. `this`
 
+    >`this`类似于[动态作用域](https://github.com/realgeoffrey/knowledge/blob/master/网站前端/程序员的自我修养/README.md#词法作用域动态作用域)。
+
     1. 非箭头函数
 
         `this`：调用函数的那个对象（与在什么作用域无关）；`this`的值：在函数被调用时才会指定。
@@ -3232,60 +3241,64 @@
         <summary>e.g.</summary>
 
         ```javascript
-        var x = 'global';
+        var x = 'global'
 
-        function test() {
-            console.log(this.x + '|' + _test() + '|' + (function () {return this.x;}()));
+        function windowTest () {
+          console.log(this.x + '|' + _test() + '|' + (function () {return this.x}()))
 
-            function _test() {
-
-                return this.x;
-            }
+          function _test () {
+            return this.x
+          }
         }
 
         /* window：方法没有对象调用（直接函数调用、立即调用的函数表达式，且与作用域无关） */
-        test();                 // => global|global|global
+        windowTest()                // => global|global|global
 
         var obj1 = {
-            x: 1,
-            test: function () {
-                var that = this;
+          x: 1,
+          test1: function () {
+            var that = this
 
-                return function () {
+            return function () {
 
-                    console.log(this.x + '|' + that.x);
-                };
+              console.log(this.x + '|' + that.x)
             }
-        };
-        (obj1.test()());        // => global|1
+          },
+          test2: function () {
+            console.log(this.x)
+          }
+        }
+        ;(obj1.test1()())           // => global|1
 
-        var { test } = obj1;
-        (test()())              // => global|global
+        var { test1 } = obj1
+        ;(test1()())                // => global|global
+        setTimeout(obj1.test1(), 0) // => global|1
+        setTimeout(obj1.test2, 0)   // => global
 
 
         /* 上级对象：函数作为某个对象的方法调用 */
-        var obj2 = {};
-        obj2.x = 2;
-        obj2.func = test;
-        obj2.func();            // => 2|global|global
+        var obj2 = {}
+        obj2.x = 2
+        obj2.func = windowTest
+        obj2.func()                 // => 2|global|global
 
 
         /* 新实例对象：构造函数 */
-        function Test() {
-            this.x = 3;
-            console.log(this.x + '|' + _test() + '|' + (function () {return this.x;}()));
+        function Test () {
+          this.x = 3
+          console.log(this.x + '|' + _test() + '|' + (function () {return this.x}()))
 
-            function _test() {
-
-                return this.x;
-            }
+          function _test () {
+            return this.x
+          }
         }
-        var obj3 = new Test();  // => 3|global|global
+
+        var obj3 = new Test()       // => 3|global|global
 
 
         /* 传入的指定对象：apply或call调用 */
-        var obj4 = {x: 4};
-        obj2.func.call(obj4);   // => 4|global|global
+        var obj4 = { x: 4 }
+        obj2.func.call(obj4)        // => 4|global|global
         ```
         </details>
 
@@ -3309,7 +3322,7 @@
 
 ### 闭包（closure）
 1. 当函数体内定义了其他函数时，就创建了闭包。内部函数总是可以访问其所在的外部函数中声明的内容（链式作用域），即使外部函数执行完毕（寿命终结）之后。
-2. 闭包：能够读取其他函数体内变量的函数。由两部分构成：**函数**、**上下文环境**（链式作用域）。
+2. 无论通过何种手段将内部函数传递到它所在的词法作用域以外，函数都会持有对原始定义作用域的引用（函数记住并访问它原始所在的词法作用域），无论在何处执行这个函数都会使用闭包。
 3. 闭包通常用来创建私有变量或方法，使得这些内容不被外部访问，同时又可以通过指定的闭包函数访问。
 
 - 产生效果：
@@ -3715,7 +3728,7 @@
                 1. `String(Symbol())      // => 'Symbol()'`
                 2. `String(Symbol(1))     // => 'Symbol(1)'`
                 3. `String(Symbol('abc')) // => 'Symbol(abc)'`
-            7. Bigint：`String(1n) // => '1'`。
+            7. BigInt：`String(1n) // => '1'`。
         2. 引用数据类型：
 
             若是数组，则返回该数组的字符串形式；否则返回一个类型字符串。
@@ -3780,7 +3793,7 @@
 
         - `+`加法运算：
 
-            >`Symbol`不能进行~~加法运算~~；`Bigint`只能和 `Bigint`、字符串、对象 进行加法运算。
+            >`Symbol`不能进行~~加法运算~~；`BigInt`只能和 `BigInt`、字符串、对象 进行加法运算。
 
             1. 若运算数有对象，先`ToPrimitive(对象)`转换为的基本数据类型，再按照下面方式继续自动转换或运算出结果；
             2. 若运算数有字符串，则都转换为字符串（`String(基本数据类型)`）进行；
