@@ -26,6 +26,7 @@
     1. [函数防抖、函数节流](#函数防抖函数节流)
     1. [自执行匿名函数（拉姆达，λ，lambda）](#自执行匿名函数拉姆达λlambda)
     1. [Hybrid App相关](#hybrid-app相关)
+    1. [WAP端适配经验](#wap端适配经验)
     1. [Tips](#tips)
     1. [函数模板](#函数模板)
 1. [功能归纳](#功能归纳)
@@ -1604,6 +1605,7 @@
             >    </details>
             >2. 微信分享在部分系统（低于微信客户端Android6.2）使用~~pushState~~导致签名失败，可查询[官方文档](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115)；又因为一般是异步加载、配置微信的设置，所以要等待微信第三方文件和接口完成后才能够配置成功（才能够设置成功）。
             >3. Android的微信、QQ等X5内核可以用<http://debugx5.qq.com/>打开调试，可进行清除缓存等操作。
+            >4. 在iOS微信webview长按没有 ~~`src`~~ 的`<img>`，可以截屏这个`<img>`所在位置。
         3. iOS9+的Universal links（通用链接），可以从底层打开其他App客户端，跳过白名单（微信已禁用）
 
             >需要HTTPS域名配置、iOS设置等其他端配合。
@@ -1667,6 +1669,9 @@
 
         1. 通过JS触发Native App之间的切换分享（自己Native内可用桥协议，任意App均要起作用只能用Scheme）。
         2. 带分享信息参数去访问其他App提供的分享URL。
+
+### WAP端适配经验
+// todo
 
 ### Tips
 1. `var a = b = c = 1;/* b、c没有var的声明。等价于：var a = 1; b = 1; c = 1; */`
@@ -2107,44 +2112,45 @@
         4. Number实例 -> `'[object Number]'`
         5. String实例 -> `'[object String]'`
         6. Symbol实例 -> `'[object Symbol]'`
-        7. Object实例 -> `'[object Object]'`
-        8. 自定义类型实例 -> `'[object Object]'`
-        9. Array实例 -> `'[object Array]'`
-        10. Function实例 -> `'[object Function]'`
-        11. Date实例 -> `'[object Date]'`
-        12. RegExp实例 -> `'[object RegExp]'`
-        13. <details>
+        7. BigInt实例 -> `'[object BigInt]'`
+        8. Object实例 -> `'[object Object]'`
+        9. 自定义类型实例 -> `'[object Object]'`
+        10. Array实例 -> `'[object Array]'`
+        11. Function实例 -> `'[object Function]'`
+        12. Date实例 -> `'[object Date]'`
+        13. RegExp实例 -> `'[object RegExp]'`
+        14. <details>
 
             <summary>Error类型实例 -> <code>'[object Error]'</code></summary>
 
             Error、EvalError、RangeError、ReferenceError、SyntaxError、TypeError、URIError
             </details>
-        14. Map实例 -> `'[object Map]'`
-        15. Set实例 -> `'[object Set]'`
-        16. WeakMap实例 -> `'[object WeakMap]'`
-        17. WeakSet实例 -> `'[object WeakSet]'`
-        18. Promise实例 -> `'[object Promise]'`
-        19. 生成器实例 -> `'[object GeneratorFunction]'`
-        20. `window` -> `'[object Window]'`
-        21. `document` -> `'[object HTMLDocument]'`
+        15. Map实例 -> `'[object Map]'`
+        16. Set实例 -> `'[object Set]'`
+        17. WeakMap实例 -> `'[object WeakMap]'`
+        18. WeakSet实例 -> `'[object WeakSet]'`
+        19. Promise实例 -> `'[object Promise]'`
+        20. 生成器实例 -> `'[object GeneratorFunction]'`
+        21. `window` -> `'[object Window]'`
+        22. `document` -> `'[object HTMLDocument]'`
 
             >参考：[MDN：HTML 元素接口](https://developer.mozilla.org/zh-CN/docs/Web/API/Document_Object_Model#HTML_元素接口)。
 
             继承`document`的各种DOM，返回`'[object HTML继承类Element]'`。
-        22. HTMLCollection实例（DOM集合） -> `'[object HTMLCollection]'`
-        23. NodeList实例（`DOM.childNodes`或`document.querySelectorAll`等返回） -> `'[object NodeList]'`
-        24. `arguments` -> `'[object Arguments]'`
-        25. `Math` -> `'[object Math]'`
-        26. `JSON` -> `'[object JSON]'`
-        27. `WebAssembly` -> `'[object WebAssembly]'`
-        28. <details>
+        23. HTMLCollection实例（DOM集合） -> `'[object HTMLCollection]'`
+        24. NodeList实例（`DOM.childNodes`或`document.querySelectorAll`等返回） -> `'[object NodeList]'`
+        25. `arguments` -> `'[object Arguments]'`
+        26. `Math` -> `'[object Math]'`
+        27. `JSON` -> `'[object JSON]'`
+        28. `WebAssembly` -> `'[object WebAssembly]'`
+        29. <details>
 
             <summary>TypedArray实例 -> <code>'[object 构造函数名]'</code></summary>
 
             Int8Array、Uint8Array、Uint8ClampedArray、Int16Array、Uint16Array、Int32Array、Uint32Array、Float32Array、Float64Array
             </details>
-        29. ArrayBuffer实例 -> `'[object ArrayBuffer]'`
-        30. DataView实例 -> `'[object DataView]'`
+        30. ArrayBuffer实例 -> `'[object ArrayBuffer]'`
+        31. DataView实例 -> `'[object DataView]'`
 
         ><details>
         ><summary>对于没有声明的变量，直接使用会报<strong>引用不存在变量</strong>的错误，可以用<code>typeof</code>来使代码健壮</summary>
@@ -2160,10 +2166,11 @@
         2. 布尔型 -> `'boolean'`
         3. 数值型 -> `'number'`
         4. Symbol型 -> `'symbol'`
-        5. `undefined` -> `'undefined'`
-        6. 函数 -> `'function'`
-        7. 引用对象型 -> `'object'`
-        8. `null` -> `'object'`
+        5. BigInt型 -> `'bigint'`
+        6. `undefined` -> `'undefined'`
+        7. 函数 -> `'function'`
+        8. 引用对象型 -> `'object'`
+        9. `null` -> `'object'`
 
         >1. 因为`typeof null`返回`'object'`，因此typeof不能判断是否是引用数据类型。
         >2. ie8-的DOM节点的方法返回不是~~function~~，而是`object`，因此只能用`方法名 in DOM`检测DOM是否拥有某方法。
@@ -3214,9 +3221,9 @@
     </details>
 2. `this`
 
-    >`this`类似于[动态作用域](https://github.com/realgeoffrey/knowledge/blob/master/网站前端/程序员的自我修养/README.md#词法作用域动态作用域)。
-
     1. 非箭头函数
+
+        >`this`取值类似于[动态作用域](https://github.com/realgeoffrey/knowledge/blob/master/网站前端/程序员的自我修养/README.md#词法作用域动态作用域)。
 
         `this`：调用函数的那个对象（与在什么作用域无关）；`this`的值：在函数被调用时才会指定。
 
@@ -3318,7 +3325,34 @@
         ></details>
     2. 箭头函数
 
-        不会创建自己的`this`，而使用封闭执行上下文最近的一个`this`值。`this`的值：在函数被调用时才会指定（向上查找）。
+        不会创建自己的`this`，根据[词法作用域](https://github.com/realgeoffrey/knowledge/blob/master/网站前端/程序员的自我修养/README.md#词法作用域动态作用域)向上遍历查找直到非箭头函数定义的`this`或全局作用域；若找到`this`，则再根据非箭头函数的方式决定取值。
+
+        >看上去就像：使用封闭执行上下文最近的一个`this`值。
+
+        ><details>
+        ><summary>e.g.</summary>
+        >
+        >```javascript
+        >var a = {
+        >  foo: () => {     // 箭头函数
+        >    return () => {
+        >      console.log(this)
+        >    }
+        >  },
+        >  bar () {         // 非箭头函数（简写的方法）
+        >    return () => {
+        >      console.log(this)
+        >    }
+        >  }
+        >}
+        >
+        >a.foo()()     // window
+        >a.bar()()     // a
+        >
+        >var b = a.bar
+        >b()()         // window
+        >```
+        ></details>
 
 ### 闭包（closure）
 1. 当函数体内定义了其他函数时，就创建了闭包。内部函数总是可以访问其所在的外部函数中声明的内容（链式作用域），即使外部函数执行完毕（寿命终结）之后。
